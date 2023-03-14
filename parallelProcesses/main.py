@@ -1,7 +1,9 @@
-import requests
 from bs4 import BeautifulSoup as bsoup
+from collections import Counter
+import requests
 import re
 import time
+import matplotlib
 
 
 # start timing the program
@@ -28,10 +30,22 @@ text_b_words = re.findall(r'\b\w+\b', text_b)
 print("printing the raw data from website_a \n {}" .format(text_a_words))
 print("printing the raw data from website_b \n {}" .format(text_b_words))
 
+text_ab = list(text_a_words + text_b_words)
+
+print("\nprinting concatenated lists text_a_words and text_b_words as a list text_ab \n {}" .format(text_ab))
+
+frequency_text_ab = Counter(text_ab)
+
+print("\nprinting the word frequency \n {}" .format(frequency_text_ab))
+
+# record the finish time of the program
 end_time = time.time()
+
+# calculate the run time of the program
 run_time = end_time - start_time
 
-print(f"The program takes {run_time:.2f} seconds to finish.")
+# print the run time of the program
+print(f"\nThe program takes {run_time:.2f} seconds to finish.")
 
 # numpy.savetxt("website_a.csv")
 # numpy.savetxt("website_b.csv")
