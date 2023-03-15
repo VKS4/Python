@@ -37,9 +37,9 @@ def load_array_x():
     # print variable element_range_b
     print("printing first four columns in the 5th row of array_y \n {}" .format(element_range_b))
 
-    # # access all data between 4th row and 4th column of array_y
-    # element_range_c = array_y[:4][:]
-    # element_range_c = array_y[:][:4]
-    #
-    # # print the variable element_range_c
-    # print("printing section of array_y \n {}" .format(element_range_c))
+    # access all data between 4th row and 4th column of array_y
+    array_y = numpy.array(array_x)
+    element_range_c = array_y[:5][:5].tolist()
+
+    # print the variable element_range_c
+    print("printing section of array_y \n {}" .format(element_range_c))
