@@ -3,7 +3,7 @@ All projects were done using PyCharm IDE. https://www.jetbrains.com/pycharm/
 
 ## exercisesNumpy01
 
-Exercises to practice numpy library and work with .csv files.
+Exercises to practice numpy library and work with .csv files. CSV file used for the exercises was in this case created locally.
 
 ## parallelProcesses
 
