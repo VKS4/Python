@@ -4,7 +4,7 @@ import requests
 import re
 import time
 import threading
-import matplotlib
+import matplotlib.pyplot as plt
 
 import functions
 
@@ -78,17 +78,31 @@ print("\nPrinting filtered words\n {}".format(filtered_words_all))
 frequency_text_all = Counter(filtered_words_all)
 
 print("\nPrinting the frequency of the words found in filtered_words_all variable\n {}".format(frequency_text_all))
-# #
-# # # print("\nprinting the word frequency \n {}" .format(frequency_text_ab))
-# #
-# # # record the finish time of the program
-# # end_time = time.time()
-# #
-# # # calculate the run time of the program
-# # run_time = end_time - start_time
-# #
-# # # print the run time of the program
-# # print(f"\nThe program takes {run_time:.2f} seconds to finish.")
-# #
-# # # numpy.savetxt("website_a.csv")
-# # # numpy.savetxt("website_b.csv")
+
+frequency_text_20 = frequency_text_all.most_common(20)
+
+# separate the words and their frequency count
+labels, values = zip(*frequency_text_20)
+
+# create a bar chart of the top 20 words
+plt.bar(labels, values)
+
+# set the title and axis labels
+plt.title("20 Most Common Words")
+plt.xlabel("Words")
+plt.ylabel("Count")
+
+# rotate the x-axis labels for better readability
+plt.xticks(rotation=90)
+
+# record the finish time of the program
+end_time = time.time()
+
+# calculate the run time of the program
+run_time = end_time - start_time
+
+# print the run time of the program
+print(f"\nThe program takes {run_time:.2f} seconds to finish.")
+
+# display the plot
+plt.show()
