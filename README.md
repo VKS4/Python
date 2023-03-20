@@ -12,3 +12,4 @@ Project for a website scrapper using multithreading and matplotlib to show 20 mo
 ## irisDatasetMachineLearning
 
 Basic layout of a machine learning project using the Iris dataset. Dataset available here: https://www.kaggle.com/datasets/uciml/iris
+This project is a part of my learning in the area of machine learning and I followed guide from the following course: https://machinelearningmastery.com/machine-learning-in-python-step-by-step/
