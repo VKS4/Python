@@ -2,6 +2,7 @@ import os
 from PIL import Image, ImageFilter
 import matplotlib.pyplot as plt
 import numpy
+from skimage import measure
 
 
 class ImageToGreyscale:
@@ -45,7 +46,7 @@ class ImageToGreyscale:
         return pixels, width, height, bitmap
 
     @staticmethod
-    def create_greyscale_plot_using_for_loop(pixels, width, height):
+    def find_edges_using_PIL(pixels, width, height):
 
         # using for loop to go through the PixelAccess object
         gray_pixels = [[pixels[x, y] for x in range(width)] for y in range(height)]
@@ -61,16 +62,20 @@ class ImageToGreyscale:
 
         return plot_using_for, processed_image
 
+
     # @staticmethod
-    # def create_greyscale_plot_using_numpy(bitmap):
+    # def find_edges_using_skimage(pixels, width, height):
     #
-    #     # convert the PixelAccess object to a numpy array of type uint8
-    #     pixels = numpy.array(bitmap)
+    #     # using for loop to go through the PixelAccess object
+    #     gray_pixels = [[pixels[x, y] for x in range(width)] for y in range(height)]
+    #     # gray_pixels = numpy.array(gray_pixels, dtype=numpy.uint8)
+    #     processed_image = Image.fromarray(gray_pixels)
     #
-    #     # convert the PixelAccess object to a numpy array
-    #     gray_pixels = numpy.array(pixels)
-    #
+    #     plt.suptitle("Greyscale of the uploaded image")
     #     plt.imshow(gray_pixels, cmap='gray')
-    #     plot_using_numpy_array = plt.show()
+    #     plot_using_for = plt.show()
     #
-    #     return plot_using_numpy_array
+    #     processed_image = processed_image.filter(ImageFilter.CONTOUR)
+    #     processed_image.show()
+    #
+    #     return

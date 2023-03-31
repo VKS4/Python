@@ -1,75 +1,116 @@
 # check package versions
 import sys
 
+import matplotlib
+import numpy
+import pandas
+import scipy
+import sklearn
 from matplotlib import pyplot
 from pandas import DataFrame
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 print('Python: {}'.format(sys.version))
-import scipy
 print('scipy: {}'.format(scipy.__version__))
-import numpy
 print('numpy: {}'.format(numpy.__version__))
-import matplotlib
 print('matplotlib: {}'.format(matplotlib.__version__))
-import pandas
 print('pandas: {}'.format(pandas.__version__))
-#import sklearn
-#print('sklearn: {}'.format(sklearn.__version__))
+print('sklearn: {}'.format(sklearn.__version__))
 
-names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
-irisSet: DataFrame | None = pandas.read_csv("iris.csv")
 
-# print how many instances(rows) and attributes(columns) does the data set have
-print(irisSet.shape)
+def load_dataset():
+    names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
+    iris_dataset: DataFrame | None = pandas.read_csv("iris.csv")
 
-# print the first 20 lines of data of all columns
-print(irisSet.head(20))
+    # print how many instances(rows) and attributes(columns) does the data set have
+    print(iris_dataset.shape)
 
-# print statistic information about the dataset
-print(irisSet.describe())
+    # print the first 20 lines of data of all columns
+    print(iris_dataset.head(20))
 
-# box and whisker plots
-irisSet.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
-pyplot.show()
+    # print statistic information about the dataset
+    print(iris_dataset.describe())
 
-# histograms
-irisSet.hist()
-pyplot.show()
+    return names, iris_dataset
 
-# scatter plot matrix
-pandas.plotting.scatter_matrix(irisSet)
-pyplot.show()
 
-array = irisSet.values
-X = array[:, 0:4]
-Y = array[:, 4]
+def plot_dataset(iris_dataset):
+    # box and whisker plots
+    iris_dataset.plot(kind='box', subplots=True, layout=(2, 2), sharex=False, sharey=False)
+    pyplot.show()
 
-def splitTest (X, Y):
-    print('Length of array X', len(X))
-    print('Length of array Y', len(Y))
+    # histograms
+    iris_dataset.hist()
+    pyplot.show()
 
-    A = len(X)*0.2
-    B = len(Y)*0.2
+    # scatter plot matrix
+    pandas.plotting.scatter_matrix(iris_dataset)
+    pyplot.show()
 
-    Aa = len(X) * 0.8
-    Bb = len(Y) * 0.8
+    array = iris_dataset.values
+    x = array[:, 0:4]
+    y = array[:, 4]
 
-    learnX = array[0:int(Aa), 0:4]
-    learnY = array[0:int(Bb), 4]
+    return x, y, array
 
-    testX = array[0:int(A), 0:4]
-    testY = array[0:int(B), 4]
 
-    print('Test X array ', testX)
-    print('Test Y array ', testY)
+def split_test(x, y, array):
+    print('Length of array X', len(x))
+    print('Length of array Y', len(y))
 
-    print('Learn X array ', learnX)
-    print('Learn Y array ', learnY)
+    # split the dataset into 20% and 80%. (learning dataset part and testing dataset part)
+    a = len(x) * 0.2
+    b = len(y) * 0.2
 
-#     return(learnX, learnY, testX, testY)
-#
-#     pass
-#
-# learnX, learnY, testX, testY = splitTest(X, Y)
+    a2 = len(x) * 0.8
+    b2 = len(y) * 0.8
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    learn_x = array[0:int(a2), 0:4]
+    learn_y = array[0:int(b2), 4]
+
+    test_x = array[0:int(a), 0:4]
+    test_y = array[0:int(b), 4]
+
+    print('Test X array ', test_x)
+    print('Test Y array ', test_y)
+
+    print('Learn X array ', learn_x)
+    print('Learn Y array ', learn_y)
+
+    return learn_x, learn_y, test_x, test_y
+
+
+def test_models(learn_x, learn_y):
+    models = [('LR', LogisticRegression(solver='liblinear', multi_class='ovr')),
+              ('LDA', LinearDiscriminantAnalysis()),
+              ('KNN', KNeighborsClassifier()),
+              ('CART', DecisionTreeClassifier()),
+              ('NB', GaussianNB()),
+              ('SVM', SVC(gamma='auto'))]
+
+    results = []
+    names = []
+    cv_results = []
+
+    for name, model in models:
+        kfold = StratifiedKFold(n_splits=10, random_state=1, shuffle=True)
+        cv_results = cross_val_score(model, learn_x, learn_y, cv=kfold, scoring='accuracy')
+        results.append(cv_results)
+        names.append(name)
+
+        print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
+
+    return models, results, names, cv_results
+
+
+names_out, iris_dataset_out = load_dataset()
+X, Y, array = plot_dataset(iris_dataset_out)
+learn_x, learn_y, test_x, test_y = split_test(X, Y, array)
+models, results, names, cv_results = test_models(learn_x, learn_y)
