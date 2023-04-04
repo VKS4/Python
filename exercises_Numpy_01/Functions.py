@@ -43,3 +43,5 @@ def load_array_x():
     #
     # # print the variable element_range_c
     # print("printing section of array_y \n {}" .format(element_range_c))
+
+    pass
