@@ -5,8 +5,20 @@ import re
 import time
 import threading
 import matplotlib.pyplot as plt
+import nltk
 
 import functions
+
+
+def download_stopwords():
+    # download the stop words for the English language
+    nltk.download('stopwords')
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+
+    pass
+
+
+download_stopwords()
 
 # start timing the program
 start_time = time.time()
@@ -48,61 +60,51 @@ website_b = thread_b.result
 website_c = thread_c.result
 website_d = thread_d.result
 
-# save the raw HTML data to response_a and response_b variables
-# website_a = functions.scrap_data_a()
-# website_a = functions.scrap_data_b()
-# website_a = functions.scrap_data_c()
-# website_a = functions.scrap_data_d()
 
-response_ab = website_a.text + website_b.text
-response_cd = website_c.text + website_d.text
-response_all = response_ab + response_cd
+def language_processing(website_a, website_b, website_c, website_d):
+    response_ab = website_a.text + website_b.text
+    response_cd = website_c.text + website_d.text
+    response_all = response_ab + response_cd
 
-# website_a.text + website_b.text + website_c.text + website_d.text
-# print("Prnting stuff {}" .format(response_a))
+    parsed_content_all = bsoup(response_all, "html.parser")
+    text_all = parsed_content_all.get_text()
 
-parsed_content_all = bsoup(response_all, "html.parser")
-print("Prnting stuff {}".format(response_all))
+    # filter out stop words
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+    filtered_words_all = [word for word in re.findall(r'\b\w+\b', text_all) if word.lower() not in stop_words]
 
-text_all = bsoup.getText(parsed_content_all)
+    frequency_text_all = Counter(filtered_words_all)
 
-# filter words from HTML
-text_words_all = re.findall(r'\b\w+\b', text_all)
+    # get the top 20 words
+    frequency_text_20 = frequency_text_all.most_common(20)
 
-# filter out numbers
-filtered_words_all = [word for word in text_words_all if not re.search("\d", word)]
+    # separate the words and their frequency count
+    labels, values = zip(*frequency_text_20)
 
-# print the filtered words
-print("\nPrinting filtered words\n {}".format(filtered_words_all))
+    # create a bar chart of the top 20 words
+    plt.bar(labels, values)
 
-frequency_text_all = Counter(filtered_words_all)
+    # set the title and axis labels
+    plt.title("20 Most Common Words")
+    plt.xlabel("Words")
+    plt.ylabel("Count")
 
-print("\nPrinting the frequency of the words found in filtered_words_all variable\n {}".format(frequency_text_all))
+    # rotate the x-axis labels for better readability
+    plt.xticks(rotation=90)
 
-frequency_text_20 = frequency_text_all.most_common(20)
+    # record the finish time of the program
+    end_time = time.time()
 
-# separate the words and their frequency count
-labels, values = zip(*frequency_text_20)
+    # calculate the run time of the program
+    run_time = end_time - start_time
 
-# create a bar chart of the top 20 words
-plt.bar(labels, values)
+    # print the run time of the program
+    print(f"\nThe program takes {run_time:.2f} seconds to finish.")
 
-# set the title and axis labels
-plt.title("20 Most Common Words")
-plt.xlabel("Words")
-plt.ylabel("Count")
+    # display the plot
+    plt.show()
 
-# rotate the x-axis labels for better readability
-plt.xticks(rotation=90)
+    pass
 
-# record the finish time of the program
-end_time = time.time()
 
-# calculate the run time of the program
-run_time = end_time - start_time
-
-# print the run time of the program
-print(f"\nThe program takes {run_time:.2f} seconds to finish.")
-
-# display the plot
-plt.show()
+language_processing(website_a, website_b, website_c, website_d)

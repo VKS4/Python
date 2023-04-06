@@ -4,24 +4,24 @@ import requests
 
 
 def scrap_data_a():
-    website_a = requests.get("https://www.idnes.cz/zpravy")
+    website_a = requests.get("https://www.nytimes.com/international/")
 
     return website_a
 
 
 def scrap_data_b():
-    website_b = requests.get("https://www.seznamzpravy.cz/")
+    website_b = requests.get("https://edition.cnn.com/")
 
     return website_b
 
 
 def scrap_data_c():
-    website_c = requests.get("https://www.novinky.cz/")
+    website_c = requests.get("https://www.bbc.com/news//world")
 
     return website_c
 
 
 def scrap_data_d():
-    website_d = requests.get("https://zpravy.aktualne.cz/")
+    website_d = requests.get("https://time.com/")
 
     return website_d
