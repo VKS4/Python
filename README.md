@@ -10,7 +10,7 @@ This project is a part of my learning in the area of machine learning and I foll
 
 ## 2D_images_to_3D_model
 
-Basic layout of a photogrammetry software. Currently with only very basic functions. Image to grayscale conversion and basic image filtering to find lines and edges.
+Basic layout of a photogrammetry software. Currently with only very basic functions. Image to grayscale conversion and basic image filtering to find lines and edges. The image is loaded up as a system variable, if you would like to use this code you have to make sure to create the system variable in your system. It should contain the path to the image.
 
 ## parallelProcesses
 
