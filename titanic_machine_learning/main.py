@@ -1,21 +1,13 @@
-import sys
-
-import matplotlib
-import numpy
 import pandas
 from matplotlib import pyplot as plt
 from pandas import DataFrame
-import scipy
-import sklearn
 import missingno as mi
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.utils.multiclass import type_of_target
@@ -91,7 +83,7 @@ def split_dataset(titanic_dataset):
     titanic_array = pandas.DataFrame(titanic_dataset).values
 
     # # variable representing selected columns for the training input features
-    selected_columns = ["pclass", "survived", "sex", "age"]
+    selected_columns = ["pclass", "sex", "age"]
 
     # convert column names to indices
     selected_indices = [titanic_dataset.columns.get_loc(col) for col in selected_columns]
@@ -170,7 +162,7 @@ def run_the_program():
     titanic_dataset = load_dataset()
     train_input_features, validate_input_features, train_output_labels, validate_output_labels = \
         split_dataset(titanic_dataset)
-    models, results, names, cv_results = test_models(train_input_features, train_output_labels)
+    test_models(train_input_features, train_output_labels)
 
     pass
 
