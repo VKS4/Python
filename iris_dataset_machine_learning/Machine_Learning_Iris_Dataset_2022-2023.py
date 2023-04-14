@@ -17,6 +17,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.utils.multiclass import type_of_target
 
 # check package versions
 print("Python: {}".format(sys.version))
@@ -89,10 +90,16 @@ def split_dataset(x, y, dataset):
     # assign values to the variable x from the array dataset_array (all rows, first 4 columns(first index is inclusive,
     # stop index is exclusive))
     x = dataset_array[:, 0:4]
+    target_type = type_of_target(x)
+    print("This is the target type:", target_type)
+    print("this is x\n", x)
 
     # assign values to the variable y from the array dataset_array (all rows, 5th column(4th index))
     # contains the names of the flowers (used to check accuracy of the model)
     y = dataset_array[:, 4]
+    target_type = type_of_target(y)
+    print("This is the target type:", target_type)
+    print("this is y\n", y)
 
     # split the x and y arrays into training (80%) and validation (20%) sets, set that the same sequence of data is used
     # always, shuffles the dataset before splitting
