@@ -5,6 +5,7 @@ import missingno as mi
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -13,7 +14,7 @@ from sklearn.svm import SVC
 from sklearn.utils.multiclass import type_of_target
 
 
-def load_dataset():
+def data_processing():
     # load the dataset using pandas library
     titanic_dataset: DataFrame | None = pandas.read_csv("titanic_dataset.csv")
 
@@ -44,6 +45,7 @@ def load_dataset():
     # create a SimpleImputer object with strategy='median'
     imputer = SimpleImputer(strategy="mean")
 
+    # create a list of column labels that will be used for imputation of data with median value
     median_list_imputation = ["age", "fare"]
 
     # replace NaN values in column 'age' with median value
@@ -70,6 +72,7 @@ def load_dataset():
     # adjust the layout of the subplots to make room for the titles
     fig.subplots_adjust(top=0.7, bottom=0.1)
 
+    # display the plot of data after imputation
     plt.show()
 
     # print count of missing values in each column
@@ -78,15 +81,15 @@ def load_dataset():
     return titanic_dataset
 
 
-def split_dataset(titanic_dataset):
+def split_dataset(processed_dataset):
     # create a numpy array with the values of the pandas DataFrame
-    titanic_array = pandas.DataFrame(titanic_dataset).values
+    titanic_array = pandas.DataFrame(processed_dataset).values
 
     # # variable representing selected columns for the training input features
     selected_columns = ["pclass", "sex", "age"]
 
     # convert column names to indices
-    selected_indices = [titanic_dataset.columns.get_loc(col) for col in selected_columns]
+    selected_indices = [processed_dataset.columns.get_loc(col) for col in selected_columns]
 
     # print the data to check if they correspond to the data in csv file
     print(selected_columns)
@@ -102,6 +105,7 @@ def split_dataset(titanic_dataset):
     # create a variable containing output labels
     output_labels = titanic_array[:, 1]
 
+    # convert output labels from integers to strings
     for i in range(len(output_labels)):
         if output_labels[i] == 1:
             output_labels[i] = "survived"
@@ -110,15 +114,21 @@ def split_dataset(titanic_dataset):
         else:
             print("not 0 or 1")
 
+    # print the output labels to check if they correspond to the data in csv file
     print("This is the output labels\n", output_labels)
 
+    # check the type of the target
     target_type = type_of_target(output_labels)
+
+    # print the type of the target
     print("This is the target type:", target_type)
 
+    # split the dataset into training and validation sets using train_test_split function
     train_input_features, validate_input_features, train_output_labels, validate_output_labels = train_test_split(
         input_features, output_labels, test_size=0.30, random_state=1, shuffle=True)
 
-    return train_input_features, validate_input_features, train_output_labels, validate_output_labels
+    return selected_columns, selected_indices, train_input_features, validate_input_features, train_output_labels, \
+           validate_output_labels
 
 
 def test_models(train_input_features, train_output_labels):
@@ -129,7 +139,7 @@ def test_models(train_input_features, train_output_labels):
               ('CART', DecisionTreeClassifier()),
               ('NB', GaussianNB()),
               ('SVM', SVC(gamma='auto'))]
-    
+
     # declares empty lists results, names and cv_results
     results = []
     names = []
@@ -158,13 +168,51 @@ def test_models(train_input_features, train_output_labels):
     return models, results, names, cv_results
 
 
-def run_the_program():
-    titanic_dataset = load_dataset()
-    train_input_features, validate_input_features, train_output_labels, validate_output_labels = \
-        split_dataset(titanic_dataset)
+def make_predictions(titanic_dataset):
+    # create instances of the functions defined above
+    selected_columns, selected_indices, train_input_features, validate_input_features, train_output_labels, \
+    validate_output_labels = split_dataset(titanic_dataset)
     test_models(train_input_features, train_output_labels)
 
-    pass
+    # use the Logistic Regression model to make predictions
+    model = LogisticRegression(solver='liblinear', multi_class='ovr')
+    model.fit(train_input_features, train_output_labels)
+    predictions = model.predict(validate_input_features)
+
+    # evaluate predictions
+    print(accuracy_score(validate_output_labels, predictions))
+    print(confusion_matrix(validate_output_labels, predictions))
+    print(classification_report(validate_output_labels, predictions))
+
+    return model, predictions
 
 
-run_the_program()
+# create a function that allows user to write a name and the function will tell them if the person survived or not
+def user_input(titanic_dataset):
+    # create instances of the functions defined above
+    selected_columns, selected_indices, train_input_features, validate_input_features, train_output_labels, \
+    validate_output_labels = split_dataset(titanic_dataset)
+    model, prediction = make_predictions(titanic_dataset)
+
+    # create a variable that will store the name of the person
+    name = input("\nEnter the name of the person: ")
+
+    # find the name in the dataset
+    name_index = titanic_dataset[titanic_dataset["name"] == name].values
+
+    # print the values from the row that contains the name
+    print(name_index)
+
+    # create a variable that will store the values of the selected columns
+    input_values = name_index[0, selected_indices]
+
+    # predict if the person survived or not
+    prediction = model.predict(input_values.reshape(1, -1))
+
+    # print the prediction
+    print("this person...", prediction)
+
+    return prediction
+
+
+user_input(data_processing())
