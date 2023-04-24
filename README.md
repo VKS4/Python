@@ -14,7 +14,7 @@ The code loads up the dataset of Iris flower features and measures the performan
 
 A project where I apply learnings from the Iris dataset project. The code loads up the titanic dataset, imputes missing data and does basic data preparation. Then, it measures performance of several algorithms and at the end gives you possibility of inputing a name of any person on board to tell you if they survived or not.
 
-It makes the pdictions based on age, sex, and class.
+It makes the predictions based on age, sex, and class.
 
 Dataset: https://www.kaggle.com/datasets/vinicius150987/titanic3
 
